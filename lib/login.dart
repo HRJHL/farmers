@@ -3,13 +3,13 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'home.dart';
-import 'register.dart';
+import 'join.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
   @override
-  _LoginState createState() => _LoginState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -18,7 +18,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    // Clean up the controllers when the widget is disposed.
     textEditingController.dispose();
     textEditingController2.dispose();
     super.dispose();
@@ -59,16 +58,9 @@ class _LoginPageState extends State<LoginPage> {
               String id = textEditingController.text.trim();
               String pw = textEditingController2.text.trim();
 
-              String url = 'http://192.168.0.76:3000/login'; // Adjust URL for login endpoint
+              String url = 'http://192.168.0.76:3000/login';
 
               String jsonData = jsonEncode({'id': id, 'pw': pw});
-              if (id == '0') {
-                // Navigate to the successful login page
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Login(user: id)),
-                );
-              }
               try {
                 var response = await http.post(
                   Uri.parse(url),
@@ -80,10 +72,9 @@ class _LoginPageState extends State<LoginPage> {
                 if (response.statusCode == 200) {
                   String serverResponse = response.body;
                   if (serverResponse == 'success') {
-                    // Navigate to the successful login page
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => Login(user: id)),
+                      MaterialPageRoute(builder: (context) => Home()),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -94,7 +85,6 @@ class _LoginPageState extends State<LoginPage> {
                     );
                   }
                 } else {
-                  // Handle server errors
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('서버 오류: ${response.reasonPhrase}'),
@@ -103,7 +93,6 @@ class _LoginPageState extends State<LoginPage> {
                   );
                 }
               } catch (e) {
-                // Handle unexpected errors
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('오류 발생: $e'),
@@ -117,29 +106,12 @@ class _LoginPageState extends State<LoginPage> {
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () {
-              // Navigate to the registration page
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => Join()),
               );
             },
             child: const Text('회원가입'),
-          ),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Business',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'School',
           ),
         ],
       ),
