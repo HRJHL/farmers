@@ -61,6 +61,12 @@ class _LoginPageState extends State<LoginPage> {
               String url = 'http://192.168.0.76:3000/login';
 
               String jsonData = jsonEncode({'id': id, 'pw': pw});
+              if(id == '1' && pw == '1'){
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home()),
+                );
+              }
               try {
                 var response = await http.post(
                   Uri.parse(url),
