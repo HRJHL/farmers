@@ -28,7 +28,7 @@ class _FirstPageState extends State<FirstPage> {
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 10), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => LoginPage()),
@@ -40,7 +40,10 @@ class _FirstPageState extends State<FirstPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text('배너 이미지 추가'),
+        child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0), // 좌우에 20픽셀의 여백 추가
+    child: Image.asset('assets/images/logo.png'),
+        ),
       ),
     );
   }
