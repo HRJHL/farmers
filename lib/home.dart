@@ -80,13 +80,13 @@ class Home extends StatelessWidget {
               ),
             ),
             ListTile(
-              title: Text('Item 1'),
+              title: Text('회원정보'),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              title: Text('Item 2'),
+              title: Text('이용내역'),
               onTap: () {
                 Navigator.pop(context);
               },
