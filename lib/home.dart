@@ -73,11 +73,26 @@ class Home extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            DrawerHeader(
-              child: Text('이용자 이름. 프로필. 정보.'),
-              decoration: BoxDecoration(
-                color: Colors.blue,
+            UserAccountsDrawerHeader(
+              currentAccountPicture: CircleAvatar(
+                backgroundImage: AssetImage('assets/images/roll.png'),
               ),
+              otherAccountsPictures: [
+                CircleAvatar(
+                  backgroundImage: AssetImage('assets/images/roll.png'),
+                )
+              ],
+              accountEmail: Text('dev.yakkuza@gmail.com'),
+              accountName: Text('Dev Yakuza'),
+              onDetailsPressed: () {
+                print('press details');
+              },
+              decoration: BoxDecoration(
+                  color: Colors.blue[300],
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(40),
+                    bottomRight: Radius.circular(40),
+                  )),
             ),
             ListTile(
               title: Text('회원정보'),
