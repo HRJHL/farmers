@@ -7,87 +7,119 @@ class Diction extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        flexibleSpace: Padding(
-          padding: const EdgeInsets.only(top: 8.0), // 위쪽에 8픽셀의 패딩 추가
-          child: Center(
-            child: Image.asset(
-              'assets/images/logo.png',
-              width: 200, // 이미지 너비 설정
-            ),
+        title: Text(
+          '병징 정보',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Suite',
           ),
         ),
-        backgroundColor: Colors.white,
-        elevation: 0, // 그림자 없애기
+        backgroundColor: Color(0xFF5B9A77),
+        centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0), // Padding을 추가하여 여백을 설정합니다.
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch, // 자식 위젯이 가로로 꽉 차도록 설정합니다.
+      body: ListView(
+        padding: EdgeInsets.all(16),
+        children: [
+          DiseaseCard(
+            imagePath: 'assets/bs.png',
+            title: '세균성 점무늬병',
+            onTap: () => print('세균성 점무늬병 클릭됨'),
+          ),
+          DiseaseCard(
+            imagePath: 'assets/eb.png',
+            title: '반점병',
+            onTap: () => print('반점병 클릭됨'),
+          ),
+          DiseaseCard(
+            imagePath: 'assets/hn.png',
+            title: '정상',
+            onTap: () => print('정상 클릭됨'),
+          ),
+          DiseaseCard(
+            imagePath: 'assets/lb.png',
+            title: '역병',
+            onTap: () => print('역병 클릭됨'),
+          ),
+          DiseaseCard(
+            imagePath: 'assets/lm.png',
+            title: '잎곰팡이병',
+            onTap: () => print('잎곰팡이병 클릭됨'),
+          ),
+          DiseaseCard(
+            imagePath: 'assets/pm.png',
+            title: '흰가루병',
+            onTap: () => print('흰가루병 클릭됨'),
+          ),
+          DiseaseCard(
+            imagePath: 'assets/sl.png',
+            title: '시드름병',
+            onTap: () => print('시드름병 클릭됨'),
+          ),
+          DiseaseCard(
+            imagePath: 'assets/sm.png',
+            title: '점박이응애',
+            onTap: () => print('점박이응애 클릭됨'),
+          ),
+          DiseaseCard(
+            imagePath: 'assets/ts.png',
+            title: '갈색무늬병',
+            onTap: () => print('갈색무늬병 클릭됨'),
+          ),
+          DiseaseCard(
+            imagePath: 'assets/tv.png',
+            title: '모자이크바이러스',
+            onTap: () => print('모자이크바이러스 클릭됨'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class DiseaseCard extends StatelessWidget {
+  final String imagePath;
+  final String title;
+  final VoidCallback onTap;
+
+  const DiseaseCard({
+    required this.imagePath,
+    required this.title,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 8),
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
           children: [
-            Container(
-              height: 250.0, // 고정 높이를 설정합니다.
-              padding: const EdgeInsets.all(16.0),
-              margin: const EdgeInsets.only(bottom: 16.0), // 아래쪽에 여백을 추가합니다.
-              color: Colors.blueAccent, // 배경색을 설정합니다.
-              child: Center(
-                child: Text(
-                  '이미지로 대체 예정',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
+            Image.asset(
+              imagePath,
+              width: 100,
+              height: 100,
+              fit: BoxFit.cover,
+            ),
+            SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 30,
+                  fontFamily: 'Suite',
                 ),
               ),
             ),
           ],
         ),
       ),
-      endDrawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            UserAccountsDrawerHeader(
-              currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage('assets/images/roll.png'),
-              ),
-              otherAccountsPictures: [
-                CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/roll.png'),
-                )
-              ],
-              accountEmail: Text('dev.yakkuza@gmail.com'),
-              accountName: Text('Dev Yakuza'),
-              onDetailsPressed: () {
-                print('press details');
-              },
-              decoration: BoxDecoration(
-                  color: Colors.blue[300],
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(40),
-                    bottomRight: Radius.circular(40),
-                  )),
-            ),
-            ListTile(
-              title: Text('회원정보'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text('이용내역'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: Container(
-          height: 56.0, // BottomAppBar의 높이를 설정합니다.
-        ),
-      ),
     );
   }
+}
