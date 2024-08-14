@@ -1,6 +1,6 @@
 {
-    "name": "farmers",
-    "short_name": "farmers",
+    "name": "sendgo",
+    "short_name": "sendgo",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
