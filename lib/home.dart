@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'diction.dart';
 import 'select.dart';
+import 'diary.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -21,39 +22,35 @@ class Home extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              height: 250.0,
-              padding: const EdgeInsets.all(16.0),
-              margin: const EdgeInsets.only(bottom: 16.0),
-              color: Colors.blueAccent,
-              child: Center(
-                child: Text(
-                  '이미지로 대체 예정',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
+      backgroundColor: Colors.white, // 바디 배경색을 하얗게 설정
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            height: 250.0,
+            width: double.infinity, // 가로 꽉 차게 설정
+            color: Colors.blueAccent,
+            child: Image.asset(
+              'assets/images/bener.jpg',
+              fit: BoxFit.cover, // 이미지가 꽉 차게 설정
+              width: double.infinity,
             ),
-            Expanded(
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
                   Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _buildFlexItem(context, Icons.pageview, '영농 일지', () {
-                          // 버튼 클릭 시 처리할 코드
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('영농 일지 버튼이 클릭되었습니다.')),
+                        _buildFlexItem(context, Icons.book, '영농 일지', () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Diary(),
+                            ),
                           );
                         }),
                         _buildFlexItem(context, Icons.pageview, '병징 진단', () {
@@ -73,7 +70,7 @@ class Home extends StatelessWidget {
                       children: [
                         _buildFlexItem(
                           context,
-                          Icons.pageview,
+                          Icons.book,
                           '병징 도감',
                               () {
                             Navigator.push(
@@ -86,10 +83,9 @@ class Home extends StatelessWidget {
                         ),
                         _buildFlexItem(
                           context,
-                          Icons.pageview,
+                          Icons.search,
                           '검색',
                               () {
-                            // 검색 버튼 클릭 시 처리할 코드
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('검색 버튼이 클릭되었습니다.')),
                             );
@@ -101,8 +97,8 @@ class Home extends StatelessWidget {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       endDrawer: Drawer(
         child: ListView(
@@ -146,6 +142,7 @@ class Home extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
+        color: Colors.white, // 바텀 앱바의 배경색을 하얗게 설정
         child: Container(
           height: 56.0,
         ),

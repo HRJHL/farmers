@@ -1,4 +1,14 @@
 import 'package:flutter/material.dart';
+import 'disease/diction_bs.dart';
+import 'disease/diction_eb.dart';
+import 'disease/diction_lb.dart';
+import 'disease/diction_lm.dart';
+import 'disease/diction_pm.dart';
+import 'disease/diction_sl.dart';
+import 'disease/diction_sm.dart';
+import 'disease/diction_ts.dart';
+import 'disease/diction_tv.dart';
+import 'disease/diction_ty.dart';
 
 class Diction extends StatelessWidget {
   const Diction({super.key});
@@ -24,52 +34,122 @@ class Diction extends StatelessWidget {
           DiseaseCard(
             imagePath: 'assets/images/bs.jpg',
             title: '세균성 점무늬병',
-            onTap: () => print('세균성 점무늬병 클릭됨'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DictionBS(),
+                ),
+              );
+            },
           ),
           DiseaseCard(
             imagePath: 'assets/images/eb.jpg',
             title: '반점병',
-            onTap: () => print('반점병 클릭됨'),
-          ),
-          DiseaseCard(
-            imagePath: 'assets/images/hn.jpg',
-            title: '정상',
-            onTap: () => print('정상 클릭됨'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DictionEB(),
+                ),
+              );
+            },
           ),
           DiseaseCard(
             imagePath: 'assets/images/lb.jpg',
             title: '역병',
-            onTap: () => print('역병 클릭됨'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DictionLB(),
+                ),
+              );
+            },
           ),
           DiseaseCard(
             imagePath: 'assets/images/lm.jpg',
             title: '잎곰팡이병',
-            onTap: () => print('잎곰팡이병 클릭됨'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DictionLM(),
+                ),
+              );
+            },
           ),
           DiseaseCard(
             imagePath: 'assets/images/pm.jpg',
             title: '흰가루병',
-            onTap: () => print('흰가루병 클릭됨'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DictionPM(),
+                ),
+              );
+            },
           ),
           DiseaseCard(
             imagePath: 'assets/images/sl.jpg',
             title: '시드름병',
-            onTap: () => print('시드름병 클릭됨'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DictionSL(),
+                ),
+              );
+            },
           ),
           DiseaseCard(
             imagePath: 'assets/images/sm.jpg',
             title: '점박이응애',
-            onTap: () => print('점박이응애 클릭됨'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DictionSM(),
+                ),
+              );
+            },
           ),
           DiseaseCard(
             imagePath: 'assets/images/ts.jpg',
             title: '갈색무늬병',
-            onTap: () => print('갈색무늬병 클릭됨'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DictionTS(),
+                ),
+              );
+            },
           ),
           DiseaseCard(
             imagePath: 'assets/images/tv.jpg',
             title: '모자이크바이러스',
-            onTap: () => print('모자이크바이러스 클릭됨'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DictionTV(),
+                ),
+              );
+            },
+          ),
+          DiseaseCard(
+            imagePath: 'assets/images/ty.jpg',
+            title: '토마토 황화 잎마름병',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DictionTY(),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -112,7 +192,7 @@ class DiseaseCard extends StatelessWidget {
               child: Text(
                 title,
                 style: TextStyle(
-                  fontSize: 30,
+                  fontSize: 20, // Adjusted for better fit
                   fontFamily: 'Suite',
                 ),
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'diction.dart';
+import 'detect.dart';
 
 class Select extends StatelessWidget {
   const Select({super.key});
@@ -33,9 +34,11 @@ class Select extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         _buildFlexItem(context, Icons.pageview, '작물1', () {
-                          // 버튼 클릭 시 처리할 코드
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('버튼이 클릭되었습니다.')),
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Detect(),
+                            ),
                           );
                         }),
                         _buildFlexItem(context, Icons.pageview, '작물2', () {
