@@ -37,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
                   '로그인',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Colors.lightGreen, // Updated color
+                    color: Colors.lightGreen,
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                 ElevatedButton(
                   onPressed: _handleLogin,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.lightGreen, // Updated color
+                    backgroundColor: Colors.lightGreen,
                     padding: const EdgeInsets.symmetric(vertical: 14.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
@@ -79,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   child: const Text(
                     '회원가입',
-                    style: TextStyle(color: Colors.lightGreen), // Updated color
+                    style: TextStyle(color: Colors.lightGreen),
                   ),
                 ),
               ],
@@ -101,11 +101,10 @@ class _LoginPageState extends State<LoginPage> {
       obscureText: obscureText,
       decoration: InputDecoration(
         hintText: hintText,
-        prefixIcon: icon != null ? Icon(icon, color: Colors.lightGreen) : null, // Updated color
+        prefixIcon: icon != null ? Icon(icon) : null,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
       ),
     );
   }
@@ -115,14 +114,6 @@ class _LoginPageState extends State<LoginPage> {
     String pw = _pwController.text.trim();
     String url = 'http://192.168.0.76:3000/login';
     String jsonData = jsonEncode({'id': id, 'pw': pw});
-
-    if (id == '1' && pw == '1') {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Home()),
-      );
-      return;
-    }
 
     try {
       var response = await http.post(
@@ -134,11 +125,14 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (response.statusCode == 200) {
-        String serverResponse = response.body;
-        if (serverResponse == 'success') {
+        var data = jsonDecode(response.body);
+        if (data['id'] != null) {
+          // Pass user ID to Home page
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => Home()),
+            MaterialPageRoute(
+              builder: (context) => Home(userId: data['id']),
+            ),
           );
         } else {
           _showSnackBar('로그인 실패: 아이디 또는 비밀번호가 일치하지 않습니다.');
@@ -155,7 +149,6 @@ class _LoginPageState extends State<LoginPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: const Duration(seconds: 3),
       ),
     );
   }

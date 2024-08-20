@@ -1,11 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 import 'diction.dart';
 import 'select.dart';
 import 'diary.dart';
 import 'search.dart';
 
-class Home extends StatelessWidget {
-  const Home({super.key});
+class Home extends StatefulWidget {
+  final String userId;
+
+  const Home({super.key, required this.userId});
+
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  String _nickname = '닉네임';
+  String _email = '이메일';
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserInfo();
+  }
+
+  Future<void> _fetchUserInfo() async {
+    String url = 'http://192.168.0.76:3000/user-info/${widget.userId}';
+
+    try {
+      var response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        setState(() {
+          _nickname = data['nickname'] ?? '닉네임';
+          _email = data['email'] ?? '이메일';
+        });
+      } else {
+        print('사용자 정보 조회 실패: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      print('오류 발생: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,19 +59,19 @@ class Home extends StatelessWidget {
             ),
           ),
         ),
-        backgroundColor: Colors.white, // Keep AppBar white
+        backgroundColor: Colors.white,
         elevation: 0,
       ),
-      backgroundColor: Colors.white, // Keep body background white
+      backgroundColor: Colors.white,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
             height: 250.0,
             width: double.infinity,
-            color: Colors.teal[100], // Light, refreshing teal
+            color: Colors.teal[100],
             child: Image.asset(
-              'assets/images/main.png', // Ensure the file name is correct
+              'assets/images/main.png',
               fit: BoxFit.cover,
               width: double.infinity,
             ),
@@ -54,7 +93,7 @@ class Home extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Diary(),
+                                builder: (context) => Diary(userId: widget.userId),
                               ),
                             );
                           },
@@ -119,17 +158,12 @@ class Home extends StatelessWidget {
           children: [
             UserAccountsDrawerHeader(
               currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage('assets/images/roll.png'),
+                backgroundImage: AssetImage('assets/images/cha.png'),
               ),
-              otherAccountsPictures: [
-                CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/roll.png'),
-                ),
-              ],
-              accountEmail: Text('dev.yakkuza@gmail.com'),
-              accountName: Text('Dev Yakuza'),
+              accountEmail: Text(_email),
+              accountName: Text(_nickname),
               decoration: BoxDecoration(
-                color: Colors.green[600], // Dark green for the drawer header
+                color: Colors.green[600],
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(40),
                   bottomRight: Radius.circular(40),
@@ -180,7 +214,7 @@ class Home extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        color: Colors.white, // Keep BottomAppBar white
+        color: Colors.white,
         child: Container(
           height: 56.0,
         ),
@@ -194,20 +228,20 @@ class Home extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Card(
           elevation: 4.0,
-          color: Colors.teal[50], // Light teal for card background
+          color: Colors.teal[50],
           child: InkWell(
             onTap: onPressed,
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(icon, size: 50.0, color: Colors.teal[400]), // Teal color for icon
+                  Icon(icon, size: 50.0, color: Colors.teal[400]),
                   SizedBox(height: 8.0),
                   Text(
                     label,
                     style: TextStyle(
                       fontSize: 16.0,
-                      color: Colors.teal[700], // Darker teal for text
+                      color: Colors.teal[700],
                     ),
                   ),
                 ],

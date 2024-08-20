@@ -1,119 +1,114 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'dart:io'; // Import for File handling on mobile
-import 'write.dart'; // Ensure this import is correct
+import 'package:http/http.dart' as http;
+import 'write.dart'; // Write 페이지를 가져옵니다.
 
 class DiaryEntry {
+  final int id; // id는 필수 인자
   final String title;
-  final String date;
   final String content;
-  final String? imagePath; // Image path can be null
+  final String? imagePath;
+  final String date; // date 필드 추가
 
   DiaryEntry({
+    required this.id,
     required this.title,
-    required this.date,
     required this.content,
     this.imagePath,
+    required this.date, // date 필드 추가
   });
+
+  factory DiaryEntry.fromJson(Map<String, dynamic> json) {
+    return DiaryEntry(
+      id: json['id'],
+      title: json['title'],
+      content: json['content'],
+      imagePath: json['imagePath'],
+      date: json['date'], // date 필드 추가
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'content': content,
+      'imagePath': imagePath,
+      'date': date, // date 필드 추가
+    };
+  }
 }
 
 class Diary extends StatefulWidget {
-  const Diary({super.key});
+  final String userId;
+
+  Diary({required this.userId});
 
   @override
   _DiaryState createState() => _DiaryState();
 }
 
 class _DiaryState extends State<Diary> {
-  List<DiaryEntry> diaryEntries = [
-    DiaryEntry(title: "First Entry", date: "2024-08-01", content: "This is my first diary entry."),
-    DiaryEntry(title: "Second Entry", date: "2024-08-02", content: "Today was a good day!"),
-    DiaryEntry(title: "Third Entry", date: "2024-08-03", content: "Learning Flutter is fun!"),
-  ];
+  List<DiaryEntry> diaryEntries = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchEntries();
+  }
+
+  Future<void> _fetchEntries() async {
+    final url = Uri.parse('http://192.168.0.76:3000/diary-entries/${widget.userId}');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        setState(() {
+          diaryEntries = data.map((entry) => DiaryEntry.fromJson(entry)).toList();
+        });
+      } else {
+        print('Failed to load entries');
+      }
+    } catch (e) {
+      print('Error fetching entries: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Diary'),
-        backgroundColor: Colors.green[600], // Dark green for AppBar
+        title: Text('Diary Entries'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Write(userId: widget.userId), // Pass userId to Write
+                ),
+              );
+
+              if (result != null && result is DiaryEntry) {
+                setState(() {
+                  diaryEntries.add(result);
+                });
+              }
+            },
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: diaryEntries.length,
         itemBuilder: (context, index) {
           final entry = diaryEntries[index];
-          return Card(
-            margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-            color: Colors.green[50], // Light green for card background
-            child: ListTile(
-              title: Text(entry.title),
-              subtitle: Text(entry.date),
-              trailing: Icon(Icons.arrow_forward, color: Colors.green[600]), // Green color for icon
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DiaryDetailPage(entry: entry),
-                  ),
-                );
-              },
-            ),
+          return ListTile(
+            title: Text(entry.title),
+            subtitle: Text('${entry.date}\n${entry.content}'),
+            isThreeLine: true,
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final newEntry = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Write()), // Ensure Write is correctly imported and used
-          );
-          if (newEntry != null) {
-            setState(() {
-              diaryEntries.add(newEntry);
-            });
-          }
-        },
-        child: Icon(Icons.add),
-        backgroundColor: Colors.green[600], // Dark green for FloatingActionButton
-      ),
-    );
-  }
-}
-
-class DiaryDetailPage extends StatelessWidget {
-  final DiaryEntry entry;
-
-  const DiaryDetailPage({required this.entry});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(entry.title),
-        backgroundColor: Colors.green[600], // Dark green for AppBar
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (entry.imagePath != null)
-              Image.file(
-                File(entry.imagePath!),
-                height: 200,
-                fit: BoxFit.cover,
-              ),
-            SizedBox(height: 16.0),
-            Text(
-              entry.date,
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.green[800]), // Dark green for date
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              entry.content,
-              style: TextStyle(fontSize: 16.0, color: Colors.green[700]), // Medium green for content
-            ),
-          ],
-        ),
       ),
     );
   }

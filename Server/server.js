@@ -2,9 +2,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mysql = require('mysql2');
+const multer = require('multer');
+const path = require('path');
 
 const app = express();
 const port = 3000;
+const upload = multer({ dest: 'uploads/' }); 
 
 // MySQL 연결 설정
 const connection = mysql.createConnection({
@@ -14,7 +17,6 @@ const connection = mysql.createConnection({
   database: 'farmer'
 });
 
-// MySQL 연결 확인
 connection.connect((err) => {
   if (err) {
     console.error('MySQL 연결 오류:', err);
@@ -31,12 +33,6 @@ app.use(cors());
 app.post('/join', (req, res) => {
   const { id, pw, nickname, email } = req.body;
 
-  // 사용자 입력 검증 (간단한 예시)
-  if (!id || !pw || !nickname || !email) {
-    return res.status(400).json({ message: '모든 필드를 입력하세요' });
-  }
-
-  // SQL 쿼리 실행
   const query = 'INSERT INTO users (id, pw, nickname, email) VALUES (?, ?, ?, ?)';
   connection.query(query, [id, pw, nickname, email], (err, result) => {
     if (err) {
@@ -44,7 +40,7 @@ app.post('/join', (req, res) => {
       res.status(500).json({ message: '회원가입 실패' });
     } else {
       console.log('회원가입 성공:', result);
-      res.status(200).json({ message: '회원가입 성공' });
+      res.status(200).json({ message: 'User registered successfully' });
     }
   });
 });
@@ -53,24 +49,18 @@ app.post('/join', (req, res) => {
 app.post('/login', (req, res) => {
   const { id, pw } = req.body;
 
-  // 사용자 입력 검증 (간단한 예시)
-  if (!id || !pw) {
-    return res.status(400).json({ message: '아이디와 비밀번호를 입력하세요' });
-  }
-
-  // SQL 쿼리 실행
   const query = 'SELECT * FROM users WHERE id = ? AND pw = ?';
   connection.query(query, [id, pw], (err, results) => {
     if (err) {
       console.error('로그인 중 오류 발생:', err);
-      res.status(500).json({ message: '서버 오류' });
+      res.status(500).send('server error');
     } else if (results.length > 0) {
       console.log('로그인 성공');
       // 로그인 성공 시 사용자 ID를 반환
       res.status(200).json({ id: results[0].id });
     } else {
       console.log('로그인 실패: 아이디 또는 비밀번호 불일치');
-      res.status(401).json({ message: '로그인 실패: 아이디 또는 비밀번호 불일치' });
+      res.status(401).send('failure');
     }
   });
 });
@@ -79,7 +69,6 @@ app.post('/login', (req, res) => {
 app.get('/user-info/:id', (req, res) => {
   const userId = req.params.id;
 
-  // SQL 쿼리 실행
   const query = 'SELECT nickname, email FROM users WHERE id = ?';
   connection.query(query, [userId], (err, results) => {
     if (err) {
@@ -93,6 +82,33 @@ app.get('/user-info/:id', (req, res) => {
   });
 });
 
+app.get('/diary-entries/:userId', (req, res) => {
+  const userId = req.params.userId;
+
+  const query = 'SELECT * FROM diary WHERE userId = ? ORDER BY date DESC';
+  connection.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching entries:', err);
+      res.status(500).json({ message: 'Failed to fetch entries' });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+
+app.post('/save-entry', upload.single('image'), (req, res) => {
+  const { title, content, date, userId } = req.body;
+  const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+
+  const query = 'INSERT INTO diary (title, content, date, userId, imagePath) VALUES (?, ?, ?, ?, ?)';
+  connection.query(query, [title, content, date, userId, imagePath], (err, results) => {
+    if (err) {
+      console.error('Error saving entry:', err);
+      return res.status(500).json({ message: 'Failed to save entry', error: err.message });
+    }
+    res.status(200).json({ id: results.insertId, title, date, content, imagePath });
+  });
+});
 // 서버 실행
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

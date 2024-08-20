@@ -13,10 +13,6 @@ class _SearchState extends State<Search> {
   final TextEditingController _searchController = TextEditingController();
   List<DiaryEntry> _searchResults = [];
   List<DiaryEntry> _allEntries = [
-    // Example entries for demo purposes
-    DiaryEntry(title: "First Entry", date: "2024-08-01", content: "This is my first diary entry."),
-    DiaryEntry(title: "Second Entry", date: "2024-08-02", content: "Today was a good day!"),
-    DiaryEntry(title: "Third Entry", date: "2024-08-03", content: "Learning Flutter is fun!"),
   ];
 
   void _performSearch(String query) {
