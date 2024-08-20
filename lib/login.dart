@@ -13,113 +13,149 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController textEditingController = TextEditingController();
-  final TextEditingController textEditingController2 = TextEditingController();
+  final TextEditingController _idController = TextEditingController();
+  final TextEditingController _pwController = TextEditingController();
 
   @override
   void dispose() {
-    textEditingController.dispose();
-    textEditingController2.dispose();
+    _idController.dispose();
+    _pwController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('로그인 화면'),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: textEditingController,
-              decoration: const InputDecoration(
-                hintText: '아이디',
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: textEditingController2,
-              obscureText: true, // Hide password
-              decoration: const InputDecoration(
-                hintText: '비밀번호',
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              String id = textEditingController.text.trim();
-              String pw = textEditingController2.text.trim();
-
-              String url = 'http://192.168.0.76:3000/login';
-
-              String jsonData = jsonEncode({'id': id, 'pw': pw});
-              if(id == '1' && pw == '1'){
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => Home()),
-                );
-              }
-              try {
-                var response = await http.post(
-                  Uri.parse(url),
-                  headers: <String, String>{
-                    'Content-Type': 'application/json; charset=UTF-8',
-                  },
-                  body: jsonData,
-                );
-                if (response.statusCode == 200) {
-                  String serverResponse = response.body;
-                  if (serverResponse == 'success') {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => Home()),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('로그인 실패: 아이디 또는 비밀번호가 일치하지 않습니다.'),
-                        duration: Duration(seconds: 3),
-                      ),
-                    );
-                  }
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('서버 오류: ${response.reasonPhrase}'),
-                      duration: Duration(seconds: 3),
-                    ),
-                  );
-                }
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('오류 발생: $e'),
-                    duration: Duration(seconds: 3),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  '로그인',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.lightGreen, // Updated color
                   ),
-                );
-              }
-            },
-            child: const Text('로그인'),
+                ),
+                const SizedBox(height: 32),
+                _buildTextField(
+                  controller: _idController,
+                  hintText: '아이디',
+                  icon: Icons.person,
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  controller: _pwController,
+                  hintText: '비밀번호',
+                  icon: Icons.lock,
+                  obscureText: true,
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: _handleLogin,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.lightGreen, // Updated color
+                    padding: const EdgeInsets.symmetric(vertical: 14.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    minimumSize: const Size(double.infinity, 50),
+                  ),
+                  child: const Text(
+                    '로그인',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Join()),
+                    );
+                  },
+                  child: const Text(
+                    '회원가입',
+                    style: TextStyle(color: Colors.lightGreen), // Updated color
+                  ),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Join()),
-              );
-            },
-            child: const Text('회원가입'),
-          ),
-        ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hintText,
+    IconData? icon,
+    bool obscureText = false,
+  }) {
+    return TextField(
+      controller: controller,
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        hintText: hintText,
+        prefixIcon: icon != null ? Icon(icon, color: Colors.lightGreen) : null, // Updated color
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+      ),
+    );
+  }
+
+  void _handleLogin() async {
+    String id = _idController.text.trim();
+    String pw = _pwController.text.trim();
+    String url = 'http://192.168.0.76:3000/login';
+    String jsonData = jsonEncode({'id': id, 'pw': pw});
+
+    if (id == '1' && pw == '1') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Home()),
+      );
+      return;
+    }
+
+    try {
+      var response = await http.post(
+        Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonData,
+      );
+
+      if (response.statusCode == 200) {
+        String serverResponse = response.body;
+        if (serverResponse == 'success') {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => Home()),
+          );
+        } else {
+          _showSnackBar('로그인 실패: 아이디 또는 비밀번호가 일치하지 않습니다.');
+        }
+      } else {
+        _showSnackBar('서버 오류: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      _showSnackBar('오류 발생: $e');
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 3),
       ),
     );
   }

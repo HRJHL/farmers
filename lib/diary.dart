@@ -35,7 +35,7 @@ class _DiaryState extends State<Diary> {
     return Scaffold(
       appBar: AppBar(
         title: Text('My Diary'),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.green[600], // Dark green for AppBar
       ),
       body: ListView.builder(
         itemCount: diaryEntries.length,
@@ -43,10 +43,11 @@ class _DiaryState extends State<Diary> {
           final entry = diaryEntries[index];
           return Card(
             margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            color: Colors.green[50], // Light green for card background
             child: ListTile(
               title: Text(entry.title),
               subtitle: Text(entry.date),
-              trailing: Icon(Icons.arrow_forward),
+              trailing: Icon(Icons.arrow_forward, color: Colors.green[600]), // Green color for icon
               onTap: () {
                 Navigator.push(
                   context,
@@ -72,7 +73,7 @@ class _DiaryState extends State<Diary> {
           }
         },
         child: Icon(Icons.add),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.green[600], // Dark green for FloatingActionButton
       ),
     );
   }
@@ -88,7 +89,7 @@ class DiaryDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(entry.title),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.green[600], // Dark green for AppBar
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -104,12 +105,12 @@ class DiaryDetailPage extends StatelessWidget {
             SizedBox(height: 16.0),
             Text(
               entry.date,
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.green[800]), // Dark green for date
             ),
             SizedBox(height: 16.0),
             Text(
               entry.content,
-              style: TextStyle(fontSize: 16.0),
+              style: TextStyle(fontSize: 16.0, color: Colors.green[700]), // Medium green for content
             ),
           ],
         ),

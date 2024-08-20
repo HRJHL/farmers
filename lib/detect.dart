@@ -8,104 +8,124 @@ class Detect extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Detect1'),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.green[600], // Fresh green color for AppBar
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // TextView
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0),
-            child: Text(
-              '사진을 넣어주세요',
-              style: TextStyle(
-                fontFamily: 'suite', // Replace with your font asset name
-                fontSize: 24, // Adjusted font size
-                color: Colors.black,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-
-          // ImageView
-          Container(
-            width: 300, // Adjust width as needed
-            height: 300, // Adjust height as needed
-            child: Image.asset(
-              'assets/images/pic_placeholder.png', // Replace with your image asset
-              fit: BoxFit.cover,
-            ),
-          ),
-          SizedBox(height: 20),
-
-          // Upload Button
-          Container(
-            width: 150, // Adjust button width
-            height: 60, // Adjust button height
-            child: ElevatedButton(
-              onPressed: () {
-                // Add your upload button functionality here
-              },
-              child: Image.asset(
-                'assets/images/b_upload.png', // Replace with your image asset
-                fit: BoxFit.cover,
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white, // Background color for the button
-                padding: EdgeInsets.zero, // To remove default padding
+      backgroundColor: Colors.white, // White background for a clean look
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // TextView
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20.0),
+              child: Text(
+                '사진을 넣어주세요',
+                style: TextStyle(
+                  fontSize: 24, // Adjusted font size
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold, // Bold font for emphasis
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
-          ),
-          SizedBox(height: 20),
 
-          // LinearLayout with Gallery and Camera Buttons
-          Container(
-            height: 120, // Adjust height to fit within the available space
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Gallery Button
-                Container(
-                  width: 150, // Adjust button width
-                  height: 60, // Adjust button height
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Add your gallery button functionality here
-                    },
-                    child: Image.asset(
-                      'assets/images/b_gallery.png', // Replace with your image asset
-                      fit: BoxFit.cover,
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white, // Background color for the button
-                      padding: EdgeInsets.zero, // To remove default padding
-                    ),
+            // ImageView
+            Container(
+              width: 200, // Adjusted width to make image smaller
+              height: 200, // Adjusted height to make image smaller
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12.0), // Rounded corners
+                border: Border.all(color: Colors.grey[300]!), // Light border color
+                color: Colors.grey[100], // Light background color for placeholder
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12.0), // Rounded corners
+                child: Image.asset(
+                  'assets/images/pic_placeholder.png', // Replace with your image asset
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+
+            // Upload Button
+            Container(
+              width: double.infinity, // Make button width responsive
+              height: 60, // Fixed height for button
+              child: ElevatedButton(
+                onPressed: () {
+                  // Add your upload button functionality here
+                },
+                child: Image.asset(
+                  'assets/images/b_upload.png', // Replace with your image asset
+                  fit: BoxFit.cover,
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green[600], // Green background color
+                  padding: EdgeInsets.zero, // Remove default padding
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0), // Rounded corners
                   ),
                 ),
-                SizedBox(width: 10), // Margin between gallery and camera buttons
-                // Camera Button
-                Container(
-                  width: 150, // Adjust button width
-                  height: 60, // Adjust button height
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Add your camera button functionality here
-                    },
-                    child: Image.asset(
-                      'assets/images/b_camera.png', // Replace with your image asset
-                      fit: BoxFit.cover,
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white, // Background color for the button
-                      padding: EdgeInsets.zero, // To remove default padding
+              ),
+            ),
+            SizedBox(height: 20),
+
+            // LinearLayout with Gallery and Camera Buttons
+            Container(
+              height: 120, // Fixed height for button row
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Space buttons evenly
+                children: [
+                  // Gallery Button
+                  Container(
+                    width: 150, // Fixed width for button
+                    height: 60, // Fixed height for button
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Add your gallery button functionality here
+                      },
+                      child: Image.asset(
+                        'assets/images/b_gallery.png', // Replace with your image asset
+                        fit: BoxFit.cover,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green[600], // Green background color
+                        padding: EdgeInsets.zero, // Remove default padding
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0), // Rounded corners
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  // Camera Button
+                  Container(
+                    width: 150, // Fixed width for button
+                    height: 60, // Fixed height for button
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Add your camera button functionality here
+                      },
+                      child: Image.asset(
+                        'assets/images/b_camera.png', // Replace with your image asset
+                        fit: BoxFit.cover,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green[600], // Green background color
+                        padding: EdgeInsets.zero, // Remove default padding
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0), // Rounded corners
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

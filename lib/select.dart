@@ -13,7 +13,7 @@ class Select extends StatelessWidget {
           padding: const EdgeInsets.only(top: 8.0),
           child: Center(
             child: Image.asset(
-              'assets/images/logo.png',
+              'assets/images/name.png',
               width: 200,
             ),
           ),
@@ -21,6 +21,7 @@ class Select extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
+      backgroundColor: Colors.white, // Ensure the background color is white
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -96,17 +97,26 @@ class Select extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Card(
           elevation: 4.0,
+          color: Colors.white, // Card background color
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0), // Rounded corners
+          ),
           child: InkWell(
             onTap: onPressed,
+            borderRadius: BorderRadius.circular(12.0), // Rounded corners for InkWell
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(icon, size: 50.0),
+                  Icon(icon, size: 50.0, color: Colors.green[600]), // Icon color
                   SizedBox(height: 8.0),
                   Text(
                     label,
-                    style: TextStyle(fontSize: 16.0),
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.green[600], // Text color
+                      fontWeight: FontWeight.bold, // Bold text
+                    ),
                   ),
                 ],
               ),

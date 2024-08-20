@@ -13,62 +13,107 @@ class Join extends StatefulWidget {
 class _JoinState extends State<Join> {
   bool _isLoading = false;
   String _message = '';
-  TextEditingController _idController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _idController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _nicknameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('회원가입 페이지'),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  '회원가입',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.lightGreen, // Updated color
+                  ),
+                ),
+                const SizedBox(height: 32),
+                _buildTextField(
+                  controller: _idController,
+                  hintText: '아이디',
+                  icon: Icons.person,
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  controller: _passwordController,
+                  hintText: '비밀번호',
+                  icon: Icons.lock,
+                  obscureText: true,
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  controller: _confirmPasswordController,
+                  hintText: '비밀번호 확인',
+                  icon: Icons.lock,
+                  obscureText: true,
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  controller: _nicknameController,
+                  hintText: '닉네임',
+                  icon: Icons.person_outline,
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  controller: _emailController,
+                  hintText: '이메일',
+                  icon: Icons.email,
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: _isLoading ? null : _sendDataToServer,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.lightGreen, // Use a refreshing green color
+                    padding: const EdgeInsets.symmetric(vertical: 14.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    minimumSize: const Size(double.infinity, 50),
+                  ),
+                  child: _isLoading
+                      ? CircularProgressIndicator(color: Colors.white)
+                      : const Text('회원가입'),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  _message,
+                  style: TextStyle(
+                    color: _message.startsWith('서버로 데이터 전송 성공') ? Colors.green : Colors.red,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _idController,
-              decoration: InputDecoration(
-                hintText: '아이디',
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                hintText: '비밀번호',
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: _isLoading ? null : _sendDataToServer,
-            child: _isLoading
-                ? CircularProgressIndicator()
-                : const Text('데이터 전송'),
-          ),
-          SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LoginPage()),
-              );
-            },
-            child: Text('홈으로'),
-          ),
-          SizedBox(height: 16),
-          Text(
-            _message,
-            style: TextStyle(
-              color: _message.startsWith('서버로 데이터 전송 성공') ? Colors.green : Colors.red,
-            ),
-          ),
-        ],
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hintText,
+    IconData? icon,
+    bool obscureText = false,
+  }) {
+    return TextField(
+      controller: controller,
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        hintText: hintText,
+        prefixIcon: icon != null ? Icon(icon, color: Colors.lightGreen) : null,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
       ),
     );
   }
@@ -82,12 +127,31 @@ class _JoinState extends State<Join> {
     // 서버 URL
     String url = 'http://192.168.0.76:3000/join'; // Adjust the URL for your join endpoint
 
-    // 입력된 아이디와 비밀번호 가져오기
+    // 입력된 아이디, 비밀번호, 비밀번호 확인, 닉네임, 이메일 가져오기
     String id = _idController.text.trim();
     String password = _passwordController.text.trim();
+    String confirmPassword = _confirmPasswordController.text.trim();
+    String nickname = _nicknameController.text.trim();
+    String email = _emailController.text.trim();
+
+    // 비밀번호 확인
+    if (password != confirmPassword) {
+      setState(() {
+        _message = '비밀번호와 비밀번호 확인이 일치하지 않습니다.';
+      });
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
 
     // 데이터를 JSON 형식으로 만듭니다.
-    String jsonData = jsonEncode({'id': id, 'pw': password});
+    String jsonData = jsonEncode({
+      'id': id,
+      'pw': password,
+      'nickname': nickname,
+      'email': email,
+    });
 
     try {
       // POST 요청 보내기
