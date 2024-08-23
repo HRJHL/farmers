@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'dart:io'; // Import for File handling on mobile
-import 'package:image_picker/image_picker.dart'; // Import for image picking
-import 'package:http/http.dart' as http; // Import for HTTP requests
-import 'dart:convert'; // Import for JSON encoding/decoding
-import 'diary.dart'; // Import DiaryEntry
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'diary.dart'; // DiaryEntry 정의
 
 class Write extends StatefulWidget {
-  final String userId; // Declare the userId variable
+  final String userId;
 
-  const Write({super.key, required this.userId}); // Initialize the userId in the constructor
+  const Write({super.key, required this.userId});
 
   @override
   _WriteState createState() => _WriteState();
@@ -25,7 +25,7 @@ class _WriteState extends State<Write> {
 
     if (pickedFile != null) {
       setState(() {
-        _imagePath = pickedFile.path;
+        _imagePath = pickedFile.path; // Use the file path directly
       });
     }
   }
@@ -35,7 +35,7 @@ class _WriteState extends State<Write> {
     final content = _contentController.text;
     final date = DateTime.now().toString().split(' ')[0];
 
-    final uri = Uri.parse('http://192.168.0.76:3000/save-entry'); // Update to your server URL
+    final uri = Uri.parse('http://192.168.0.76:3000/save-entry');
     final request = http.MultipartRequest('POST', uri);
 
     // Add fields
@@ -75,20 +75,19 @@ class _WriteState extends State<Write> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Write New Entry'),
-        backgroundColor: Colors.green[600], // Dark green for AppBar
+        backgroundColor: Colors.green[600],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Container to hold the image preview or placeholder
             Container(
               margin: const EdgeInsets.only(bottom: 16.0),
               height: 200.0,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.0),
-                color: Colors.grey[200], // Light grey for placeholder
+                color: Colors.grey[200],
                 image: _imagePath.isNotEmpty
                     ? DecorationImage(
                   image: FileImage(File(_imagePath)),
@@ -104,10 +103,10 @@ class _WriteState extends State<Write> {
               onPressed: _pickImage,
               child: Text('Pick Image'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green[600], // Dark green for button
-                foregroundColor: Colors.white, // White text color for button
-                padding: EdgeInsets.symmetric(vertical: 14.0), // Adjust padding for better look
-                textStyle: TextStyle(fontSize: 16.0), // Larger font size for readability
+                backgroundColor: Colors.green[600],
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: 14.0),
+                textStyle: TextStyle(fontSize: 16.0),
               ),
             ),
             SizedBox(height: 16.0),
@@ -116,7 +115,7 @@ class _WriteState extends State<Write> {
               decoration: InputDecoration(
                 labelText: 'Title',
                 border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0), // Padding inside the field
+                contentPadding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
               ),
             ),
             SizedBox(height: 16.0),
@@ -125,7 +124,7 @@ class _WriteState extends State<Write> {
               decoration: InputDecoration(
                 labelText: 'Content',
                 border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0), // Padding inside the field
+                contentPadding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
               ),
               maxLines: 6,
             ),
@@ -134,10 +133,10 @@ class _WriteState extends State<Write> {
               onPressed: _saveEntry,
               child: Text('Save'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green[600], // Dark green for button
-                foregroundColor: Colors.white, // White text color for button
-                padding: EdgeInsets.symmetric(vertical: 14.0), // Adjust padding for better look
-                textStyle: TextStyle(fontSize: 16.0), // Larger font size for readability
+                backgroundColor: Colors.green[600],
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: 14.0),
+                textStyle: TextStyle(fontSize: 16.0),
               ),
             ),
           ],

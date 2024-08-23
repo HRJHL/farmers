@@ -7,7 +7,9 @@ const path = require('path');
 
 const app = express();
 const port = 3000;
-const upload = multer({ dest: 'uploads/' }); 
+
+// 파일 업로드 설정 (Multer)
+const upload = multer({ dest: 'uploads/' });
 
 // MySQL 연결 설정
 const connection = mysql.createConnection({
@@ -28,6 +30,9 @@ connection.connect((err) => {
 // 미들웨어 설정
 app.use(bodyParser.json());
 app.use(cors());
+
+// 'uploads' 폴더를 정적 파일로 제공
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 회원가입 라우트
 app.post('/join', (req, res) => {
@@ -56,7 +61,6 @@ app.post('/login', (req, res) => {
       res.status(500).send('server error');
     } else if (results.length > 0) {
       console.log('로그인 성공');
-      // 로그인 성공 시 사용자 ID를 반환
       res.status(200).json({ id: results[0].id });
     } else {
       console.log('로그인 실패: 아이디 또는 비밀번호 불일치');
@@ -91,14 +95,20 @@ app.get('/diary-entries/:userId', (req, res) => {
       console.error('Error fetching entries:', err);
       res.status(500).json({ message: 'Failed to fetch entries' });
     } else {
-      res.status(200).json(results);
+      const baseUrl = 'http://192.168.0.76:3000/uploads/';
+      const entries = results.map(entry => ({
+        ...entry,
+        imagePath: entry.imagePath ? baseUrl + entry.imagePath : null
+      }));
+      res.status(200).json(entries);
     }
   });
 });
 
+
 app.post('/save-entry', upload.single('image'), (req, res) => {
   const { title, content, date, userId } = req.body;
-  const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+  const imagePath = req.file ? req.file.filename : null; // Use only the filename
 
   const query = 'INSERT INTO diary (title, content, date, userId, imagePath) VALUES (?, ?, ?, ?, ?)';
   connection.query(query, [title, content, date, userId, imagePath], (err, results) => {
@@ -106,9 +116,18 @@ app.post('/save-entry', upload.single('image'), (req, res) => {
       console.error('Error saving entry:', err);
       return res.status(500).json({ message: 'Failed to save entry', error: err.message });
     }
-    res.status(200).json({ id: results.insertId, title, date, content, imagePath });
+    res.status(200).json({
+      id: results.insertId,
+      title,
+      date,
+      content,
+      imagePath: imagePath ? `http://192.168.0.76:3000/uploads/${imagePath}` : null // Construct URL correctly
+    });
   });
 });
+
+
+
 // 서버 실행
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

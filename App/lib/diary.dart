@@ -1,30 +1,38 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'write.dart'; // Write 페이지를 가져옵니다.
+import 'write.dart';
+import 'read.dart';
 
 class DiaryEntry {
-  final int id; // id는 필수 인자
+  final int id;
   final String title;
   final String content;
   final String? imagePath;
-  final String date; // date 필드 추가
+  final String date;
 
   DiaryEntry({
     required this.id,
     required this.title,
     required this.content,
     this.imagePath,
-    required this.date, // date 필드 추가
+    required this.date,
   });
 
   factory DiaryEntry.fromJson(Map<String, dynamic> json) {
+    final baseUrl = 'http://192.168.0.76:3000/uploads/';
+    final imagePath = json['imagePath'] != null
+        ? (json['imagePath']!.startsWith(baseUrl)
+        ? json['imagePath']
+        : baseUrl + json['imagePath'])
+        : null;
+
     return DiaryEntry(
       id: json['id'],
       title: json['title'],
       content: json['content'],
-      imagePath: json['imagePath'],
-      date: json['date'], // date 필드 추가
+      imagePath: imagePath,
+      date: json['date'],
     );
   }
 
@@ -34,7 +42,7 @@ class DiaryEntry {
       'title': title,
       'content': content,
       'imagePath': imagePath,
-      'date': date, // date 필드 추가
+      'date': date,
     };
   }
 }
@@ -86,7 +94,7 @@ class _DiaryState extends State<Diary> {
               final result = await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Write(userId: widget.userId), // Pass userId to Write
+                  builder: (context) => Write(userId: widget.userId),
                 ),
               );
 
@@ -105,8 +113,15 @@ class _DiaryState extends State<Diary> {
           final entry = diaryEntries[index];
           return ListTile(
             title: Text(entry.title),
-            subtitle: Text('${entry.date}\n${entry.content}'),
-            isThreeLine: true,
+            subtitle: Text(entry.date),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Read(entry: entry),
+                ),
+              );
+            },
           );
         },
       ),
