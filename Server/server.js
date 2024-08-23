@@ -86,6 +86,7 @@ app.get('/user-info/:id', (req, res) => {
   });
 });
 
+// 다이어리 엔트리 조회 라우트
 app.get('/diary-entries/:userId', (req, res) => {
   const userId = req.params.userId;
 
@@ -105,10 +106,10 @@ app.get('/diary-entries/:userId', (req, res) => {
   });
 });
 
-
+// 다이어리 엔트리 저장 라우트
 app.post('/save-entry', upload.single('image'), (req, res) => {
   const { title, content, date, userId } = req.body;
-  const imagePath = req.file ? req.file.filename : null; // Use only the filename
+  const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
 
   const query = 'INSERT INTO diary (title, content, date, userId, imagePath) VALUES (?, ?, ?, ?, ?)';
   connection.query(query, [title, content, date, userId, imagePath], (err, results) => {
@@ -116,17 +117,37 @@ app.post('/save-entry', upload.single('image'), (req, res) => {
       console.error('Error saving entry:', err);
       return res.status(500).json({ message: 'Failed to save entry', error: err.message });
     }
-    res.status(200).json({
-      id: results.insertId,
-      title,
-      date,
-      content,
-      imagePath: imagePath ? `http://192.168.0.76:3000/uploads/${imagePath}` : null // Construct URL correctly
-    });
+    res.status(200).json({ id: results.insertId, title, date, content, imagePath });
   });
 });
 
+// 다이어리 검색 라우트
+app.post('/search-diaries', (req, res) => {
+  const { query } = req.body;
 
+  if (!query) {
+    return res.status(400).send('Query is required');
+  }
+
+  const sql = `
+    SELECT * FROM diary 
+    WHERE title LIKE ? OR content LIKE ?
+  `;
+  
+  connection.query(sql, [`%${query}%`, `%${query}%`], (err, results) => {
+    if (err) {
+      console.error('Error searching entries:', err);
+      return res.status(500).json({ message: 'Failed to search entries' });
+    }
+    
+    const baseUrl = 'http://192.168.0.76:3000/uploads/';
+    const entries = results.map(entry => ({
+      ...entry,
+      imagePath: entry.imagePath ? baseUrl + entry.imagePath : null
+    }));
+    res.status(200).json(entries);
+  });
+});
 
 // 서버 실행
 app.listen(port, () => {

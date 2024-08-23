@@ -6,6 +6,7 @@ import 'diction.dart';
 import 'select.dart';
 import 'diary.dart';
 import 'search.dart';
+import 'login.dart';
 
 class Home extends StatefulWidget {
   final String userId;
@@ -87,7 +88,7 @@ class _HomeState extends State<Home> {
                       children: [
                         _buildFlexItem(
                           context,
-                          Icons.book,
+                          Icons.description,
                           '영농 일지',
                               () {
                             Navigator.push(
@@ -207,7 +208,12 @@ class _HomeState extends State<Home> {
               title: Text('로그아웃'),
               onTap: () {
                 Navigator.pop(context);
-                // Handle logout functionality
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoginPage(), // Navigate to Login screen
+                  ),
+                );
               },
             ),
           ],

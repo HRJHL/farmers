@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'diary.dart';
 
 class Read extends StatelessWidget {
@@ -8,9 +9,12 @@ class Read extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final date = DateTime.parse(entry.date);
+    final formattedDate = DateFormat('yyyy-MM-dd').format(date);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Diary Entry'),
+        title: Text('일지 쓰기'),  // Changed title here
         backgroundColor: Colors.green[600],
       ),
       body: Padding(
@@ -24,7 +28,7 @@ class Read extends StatelessWidget {
             ),
             SizedBox(height: 8.0),
             Text(
-              entry.date,
+              formattedDate,  // Use formattedDate here
               style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
             SizedBox(height: 16.0),

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'write.dart';
 import 'read.dart';
 
@@ -86,7 +87,7 @@ class _DiaryState extends State<Diary> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Diary Entries'),
+        title: Text('영농일지'),  // Changed title here
         actions: [
           IconButton(
             icon: Icon(Icons.add),
@@ -111,9 +112,12 @@ class _DiaryState extends State<Diary> {
         itemCount: diaryEntries.length,
         itemBuilder: (context, index) {
           final entry = diaryEntries[index];
+          final date = DateTime.parse(entry.date);
+          final formattedDate = DateFormat('yyyy-MM-dd').format(date);
+
           return ListTile(
             title: Text(entry.title),
-            subtitle: Text(entry.date),
+            subtitle: Text(formattedDate),  // Use formattedDate here
             onTap: () {
               Navigator.push(
                 context,
