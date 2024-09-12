@@ -74,7 +74,7 @@ class _WriteState extends State<Write> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Write New Entry'),
+        title: Text('일지 쓰기'),
         backgroundColor: Colors.green[600],
       ),
       body: Padding(

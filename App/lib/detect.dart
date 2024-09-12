@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'camera.dart';
 
 class Detect extends StatelessWidget {
   const Detect({super.key});
@@ -106,7 +107,10 @@ class Detect extends StatelessWidget {
                     height: 60, // Fixed height for button
                     child: ElevatedButton(
                       onPressed: () {
-                        // Add your camera button functionality here
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => CameraScreen()),
+                        );
                       },
                       child: Image.asset(
                         'assets/images/b_camera.png', // Replace with your image asset
